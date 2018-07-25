@@ -81,22 +81,31 @@ class Game extends React.Component {
             }
           });
         }
-        else
+        else if (this.refs.time)
           this.refs.time.innerHTML = seconds;
       }, 50);
     }
     const { fetchTheme } = this.props;
-    fetchTheme((cards) => {
-      var cards = [];
-      var positionRepeat = [];
+    fetchTheme((theme) => {
+      var cards = [], position = [], details = [];
+      for (var i=0; i<this.props.gameConfig.cardsQty; i++)
+        details.push({open: false, hit: false, src: ''});
       while(cards.length < parseInt(this.props.gameConfig.cardsQty/2)) {
-        var randomnumber = Math.floor(Math.random()*cards.length);
-        if(!cards.contains(randomnumber)) {
-          cards.push(randomnumber);
-          // while(cards.length < parseInt(this.props.gameConfig.cardsQty/2)) {
-          // this.state.details.push(cards[randomnumber]);
+        var randomCard = Math.floor(Math.random()*theme.length);
+        if(!cards.includes(randomCard)) {
+          cards.push(randomCard);
+          var k=0;
+          while (k<2) {
+            var randomPosition = Math.floor(Math.random()*this.props.gameConfig.cardsQty);
+            if(!position.includes(randomPosition)) {
+              position.push(randomPosition);
+              details[randomPosition].src = theme[randomCard];
+              k++;
+            }
+          }
         }
       }
+      this.setState({details});
     });
   }
   renderCards() {
@@ -105,9 +114,9 @@ class Game extends React.Component {
       var line = [];
       for (var k=0; k<this.state.matrix.x; k++)
         line.push(
-          <span className={css(styles.card)}>
+          <span className={css(styles.card)} key={`card_${(this.state.matrix.x*i)+k}`}>
             {/* {(this.state.matrix.x*i)+k+1} */}
-            <AwesomeButton><img className={css(styles.image)} src={"https://i.kinja-img.com/gawker-media/image/upload/s--XpVzvGRN--/c_scale,f_auto,fl_progressive,q_80,w_800/mauhos11g8os6j8cnptj.jpg"} /></AwesomeButton>
+            <AwesomeButton><img className={css(styles.image)} src={`/api/card/${this.state.details[(this.state.matrix.x*i)+k].src}`} /></AwesomeButton>
           </span>
         );
       matrix.push(<div className={css(styles.card)}>{line}</div>);
@@ -138,7 +147,7 @@ class Game extends React.Component {
             <center>{this.renderPlayer(this.props.gameConfig.players[(this.state.turn+1)%2])}</center>
             <center>
               <div>
-                {this.renderCards()}
+                {this.state.details.length === this.props.gameConfig.cardsQty && this.renderCards()}
               </div>
             </center>
             <center>{this.renderPlayer(this.props.gameConfig.players[this.state.turn])}</center>

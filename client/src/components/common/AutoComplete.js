@@ -70,8 +70,9 @@ class AutoComplete extends Component {
 	}
 
 	onSelect(item) {
-    const { onSelect, keys: { name } } = this.props, value = item[name];
-    this.refs.input.value = value;
+		const { onSelect, keys: { name } } = this.props, value = item[name];
+		if (this.refs.input)
+	    this.refs.input.value = value;
 		this.setState({
 			selected: -1,
 			value: value,

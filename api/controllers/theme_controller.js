@@ -12,6 +12,18 @@ module.exports = {
 		});
 		res.send(files);
 	},
+	getCard(req, res, next) {
+		var parentPath = __dirname.split('\\');
+		parentPath.splice(-2, 2);
+		parentPath.push('puppies');
+		parentPath.push(req.params.file);
+		var card = parentPath.join('\\');
+		console.log(card);
+		if (fs.existsSync(card))
+			res.sendFile(card);
+		else 
+			res.status(404).send(`File ${req.params.hash} not found`);
+	},
 	createFile (req, res, next) {
 		var form = new formidable.IncomingForm(), params = {}, files = [];
 		form.parse(req);
