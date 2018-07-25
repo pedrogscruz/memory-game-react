@@ -61,35 +61,21 @@ class Game extends React.Component {
       end: '',
       turn: 0,
       time: props.gameConfig.timePerMove,
-      details: [],
+      details: [],removeEvents: false,
       matrix: matrixExample.find((item) => item.cardsQty === props.gameConfig.cardsQty),
-      interval: false
+      players: props.gameConfig.players.map( (item => { return {...item, points: 0} }) ),
+      interval: false,
+      firstPlay: false
     }
   }
   componentDidMount() {
-    if (!this.state.interval) {
-      this.state.end = new Date();
-      this.state.end.setSeconds(this.state.end.getSeconds() + 10);
-      this.state.interval = setInterval(() => {
-        var seconds = (Math.round((this.state.end - new Date()) / 100) / 10).toFixed(1);
-        if (seconds <= 0) {
-          this.state.end = new Date();
-          this.state.end.setSeconds(this.state.end.getSeconds() + 10);
-          this.setState((prevState) => {
-            return {
-              turn: (prevState.turn+1)%this.props.gameConfig.playersNumber
-            }
-          });
-        }
-        else if (this.refs.time)
-          this.refs.time.innerHTML = seconds;
-      }, 50);
-    }
+    if (!this.state.interval)
+      this.resetInterval();
     const { fetchTheme } = this.props;
     fetchTheme((theme) => {
       var cards = [], position = [], details = [];
       for (var i=0; i<this.props.gameConfig.cardsQty; i++)
-        details.push({open: false, hit: false, src: ''});
+        details.push({status: 'closed'});
       while(cards.length < parseInt(this.props.gameConfig.cardsQty/2)) {
         var randomCard = Math.floor(Math.random()*theme.length);
         if(!cards.includes(randomCard)) {
@@ -108,17 +94,78 @@ class Game extends React.Component {
       this.setState({details});
     });
   }
+  resetInterval() {
+    this.state.end = new Date();
+    this.state.end.setSeconds(this.state.end.getSeconds() + 10);
+    this.state.interval = setInterval(() => {
+      var seconds = (Math.round((this.state.end - new Date()) / 100) / 10).toFixed(1);
+      if (seconds <= 0) {
+        this.state.end = new Date();
+        this.state.end.setSeconds(this.state.end.getSeconds() + 10);
+        this.setState((prevState) => {
+          return { turn: (prevState.turn+1)%this.props.gameConfig.playersNumber }
+        });
+      }
+      else if (this.refs.time)
+        this.refs.time.innerHTML = seconds;
+    }, 50);
+  }
+  verifyHit (index) {
+    if (this.state.firstPlay) {
+      var after = () => {}, firstIndex = -1;
+      if (this.state.firstPlay.src === this.state.details[index].src) {
+        this.state.details[index].status = 'hit';
+        this.state.details[this.state.firstPlay.index].status = 'hit';
+        this.state.players[this.state.turn].points++;
+        this.state.details[this.state.firstPlay.index].hitter = {...this.state.players[this.state.turn]};
+        this.setState({firstPlay: false, removeEvents: true}, () => {
+          clearInterval(this.state.interval);
+          setTimeout(() => this.setState({removeEvents: false}, () => this.resetInterval()), 2000);
+        });
+      }
+      else {
+        this.state.details[index].status = 'open';
+        firstIndex = this.state.firstPlay.index;
+        this.setState({firstPlay: false, removeEvents: true}, () => {
+          clearInterval(this.state.interval);
+          setTimeout(() => {
+            this.state.details[index].status = 'closed';
+            this.state.details[firstIndex].status = 'closed'
+            this.setState((prevState) => {
+              return { turn: (prevState.turn+1)%this.props.gameConfig.playersNumber, removeEvents: false }
+            }, () => this.resetInterval());
+          }, 2000);
+        });
+      }
+    }
+    else {
+      this.state.details[index].status = 'open';
+      this.setState({firstPlay: {...this.state.details[index], index}});
+    }
+  }
   renderCards() {
     var matrix = [];
     for (var i=0; i<this.state.matrix.y; i++) {
       var line = [];
-      for (var k=0; k<this.state.matrix.x; k++)
+      for (var k=0; k<this.state.matrix.x; k++) {
+        const index = (this.state.matrix.x*i)+k;
+        const show = ['hit', 'open'].includes(this.state.details[index].status)
         line.push(
           <span className={css(styles.card)} key={`card_${(this.state.matrix.x*i)+k}`}>
             {/* {(this.state.matrix.x*i)+k+1} */}
-            <AwesomeButton><img className={css(styles.image)} src={`/api/card/${this.state.details[(this.state.matrix.x*i)+k].src}`} /></AwesomeButton>
+            <AwesomeButton
+              action={() => {
+                if (this.state.details[index].status === 'closed')
+                  this.verifyHit(index)
+              }}
+            >
+              { show &&
+                <img className={css(styles.image)} src={`/api/card/${this.state.details[(this.state.matrix.x*i)+k].src}`} />
+              }
+            </AwesomeButton>
           </span>
         );
+      }
       matrix.push(<div className={css(styles.card)}>{line}</div>);
     }
     return matrix;
@@ -126,14 +173,14 @@ class Game extends React.Component {
   renderPlayer (plyr) {
     return (
       <div className={css(styles.playerGrid)}>
-        <div>{plyr.points?plyr.points:0}</div>
         <div>{plyr.nickname}</div>
+        <div>{plyr.points}</div>
       </div>
     )
   }
   render() {
     return (
-      <div className={css(styles.squares)}>
+      <div className={css(styles.squares, this.state.removeEvents ? styles.removeEvents : null)}>
         <div className={css(styles.timePerMove)}>
           {/* <Timer second={10} finished={() => this.setState((prevState) => {
             return {
@@ -144,34 +191,34 @@ class Game extends React.Component {
         </div>
         {this.props.gameConfig.playersNumber === 2 ?
           <div>
-            <center>{this.renderPlayer(this.props.gameConfig.players[(this.state.turn+1)%2])}</center>
+            <center>{this.renderPlayer(this.state.players[(this.state.turn+1)%2])}</center>
             <center>
               <div>
                 {this.state.details.length === this.props.gameConfig.cardsQty && this.renderCards()}
               </div>
             </center>
-            <center>{this.renderPlayer(this.props.gameConfig.players[this.state.turn])}</center>
+            <center>{this.renderPlayer(this.state.players[this.state.turn])}</center>
           </div>
         :
         this.props.gameConfig.playersNumber === 3 ?
           <div>
             <div className={css(styles.grid)}>
-              <div>{this.renderPlayer(this.props.gameConfig.players[(this.state.turn+1)%3])}</div>
+              <div>{this.renderPlayer(this.state.players[(this.state.turn+1)%3])}</div>
               <div>{this.renderCards()}</div>
-              <div>{this.renderPlayer(this.props.gameConfig.players[(this.state.turn+2)%3])}</div>
+              <div>{this.renderPlayer(this.state.players[(this.state.turn+2)%3])}</div>
             </div>
-            <center>{this.renderPlayer(this.props.gameConfig.players[this.state.turn])}</center>
+            <center>{this.renderPlayer(this.state.players[this.state.turn])}</center>
           </div>
         :
         this.props.gameConfig.playersNumber === 4 ?
           <div>
-            <center>{this.renderPlayer(this.props.gameConfig.players[(this.state.turn+2)%4])}</center>
+            <center>{this.renderPlayer(this.state.players[(this.state.turn+2)%4])}</center>
             <div className={css(styles.grid)}>
-              <div>{this.renderPlayer(this.props.gameConfig.players[(this.state.turn+1)%4])}</div>
+              <div>{this.renderPlayer(this.state.players[(this.state.turn+1)%4])}</div>
               <div>{this.renderCards()}</div>
-              <div>{this.renderPlayer(this.props.gameConfig.players[(this.state.turn+3)%4])}</div>
+              <div>{this.renderPlayer(this.state.players[(this.state.turn+3)%4])}</div>
             </div>
-            <center>{this.renderPlayer(this.props.gameConfig.players[this.state.turn])}</center>
+            <center>{this.renderPlayer(this.state.players[this.state.turn])}</center>
           </div>
         :null}
       </div>

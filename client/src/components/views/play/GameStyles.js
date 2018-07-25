@@ -24,6 +24,9 @@ export const styles = StyleSheet.create({
     maxHeight: "100px",
     maxWidth: "100px"
 	},
+	removeEvents: {
+		pointerEvents: 'none'
+	},
 	playerGrid: {
 		display: 'grid',
 		gridTemplateColumns: 'auto auto',
