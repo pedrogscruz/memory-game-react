@@ -60,12 +60,16 @@ class Game extends React.Component {
     this.state = {
       end: '',
       turn: 0,
-      time: props.gameConfig.timePerMove,
-      details: [],removeEvents: false,
-      matrix: matrixExample.find((item) => item.cardsQty === props.gameConfig.cardsQty),
-      players: props.gameConfig.players.map( (item => { return {...item, points: 0} }) ),
+      moves: [],
+      details: [],
       interval: false,
-      firstPlay: false
+      modalSave: false,
+      firstPlay: false,
+      modalResult: false,
+      removeEvents: false,
+      time: props.gameConfig.timePerMove,
+      players: props.gameConfig.players.map(item => { return {...item, points: 0} }),
+      matrix: matrixExample.find((item) => item.cardsQty === props.gameConfig.cardsQty)
     }
   }
   componentDidMount() {
@@ -155,7 +159,7 @@ class Game extends React.Component {
             {/* {(this.state.matrix.x*i)+k+1} */}
             <AwesomeButton
               action={() => {
-                if (this.state.details[index].status === 'closed')
+                if (this.state.details && this.state.details[index].status === 'closed')
                   this.verifyHit(index)
               }}
             >
@@ -170,9 +174,9 @@ class Game extends React.Component {
     }
     return matrix;
   }
-  renderPlayer (plyr) {
+  renderPlayer (plyr, principal) {
     return (
-      <div className={css(styles.playerGrid)}>
+      <div className={css(styles.playerGrid, principal && styles.principal)}>
         <div>{plyr.nickname}</div>
         <div>{plyr.points}</div>
       </div>
@@ -189,6 +193,12 @@ class Game extends React.Component {
           })} /> */}
           <div ref={'time'}></div>
         </div>
+        <AwesomeButton
+          type="secondary"
+          action={() => this.setState({modalSave: true})}
+        >
+          Menu
+        </AwesomeButton>
         {this.props.gameConfig.playersNumber === 2 ?
           <div>
             <center>{this.renderPlayer(this.state.players[(this.state.turn+1)%2])}</center>
@@ -197,7 +207,7 @@ class Game extends React.Component {
                 {this.state.details.length === this.props.gameConfig.cardsQty && this.renderCards()}
               </div>
             </center>
-            <center>{this.renderPlayer(this.state.players[this.state.turn])}</center>
+            <center>{this.renderPlayer(this.state.players[this.state.turn], true)}</center>
           </div>
         :
         this.props.gameConfig.playersNumber === 3 ?
@@ -207,7 +217,7 @@ class Game extends React.Component {
               <div>{this.renderCards()}</div>
               <div>{this.renderPlayer(this.state.players[(this.state.turn+2)%3])}</div>
             </div>
-            <center>{this.renderPlayer(this.state.players[this.state.turn])}</center>
+            <center>{this.renderPlayer(this.state.players[this.state.turn], true)}</center>
           </div>
         :
         this.props.gameConfig.playersNumber === 4 ?
@@ -218,7 +228,7 @@ class Game extends React.Component {
               <div>{this.renderCards()}</div>
               <div>{this.renderPlayer(this.state.players[(this.state.turn+3)%4])}</div>
             </div>
-            <center>{this.renderPlayer(this.state.players[this.state.turn])}</center>
+            <center>{this.renderPlayer(this.state.players[this.state.turn], true)}</center>
           </div>
         :null}
       </div>

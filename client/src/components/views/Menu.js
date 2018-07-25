@@ -30,7 +30,7 @@ class Menu extends React.Component {
 							key={`${match.url}saved`}
 							to={`${match.url}saved`}
 						>
-							<AwesomeButton type="primary" size="large">Saved Games</AwesomeButton>
+							<AwesomeButton disabled={true} type="primary" size="large">Saved<br/>Games</AwesomeButton>
 						</NavLink>
 					</td>
 				</tr>
@@ -40,16 +40,16 @@ class Menu extends React.Component {
 							key={`${match.url}theme`}
 							to={`${match.url}theme`}
 						>
-							<AwesomeButton type="primary" size="large">Create Theme</AwesomeButton>
+							<AwesomeButton disabled={true} type="primary" size="large">Create<br/>Theme</AwesomeButton>
 						</NavLink>
 					</td>
+					<td>
 						<NavLink
 							key={`${match.url}ranking`}
 							to={`${match.url}ranking`}
 						>
-							<AwesomeButton type="primary" size="large">Ranking</AwesomeButton>
+							<AwesomeButton disabled={true} type="primary" size="large">Ranking</AwesomeButton>
 						</NavLink>
-					<td>
 					</td>
 				</tr>
 			</table>

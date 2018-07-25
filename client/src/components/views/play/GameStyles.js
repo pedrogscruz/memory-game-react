@@ -45,5 +45,11 @@ export const styles = StyleSheet.create({
 		left: 10,
 		bottom: 10,
 		zIndex: 10,
+	},
+	principal: {
+		width: '200px',
+    height: '50px',
+    fontSize: '30px',
+    marginTop: '1rem'
 	}
 });
