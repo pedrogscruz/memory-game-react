@@ -5,6 +5,13 @@ var formidable = require('formidable');
 // var upload_image = require("./image_upload.js");
 
 module.exports = {
+	fetchDirectory (req, res, next) {
+		var files  = [];
+		fs.readdirSync('./puppies').forEach(file => {
+			files.push(file);
+		});
+		res.send(files);
+	},
 	createFile (req, res, next) {
 		var form = new formidable.IncomingForm(), params = {}, files = [];
 		form.parse(req);
@@ -166,19 +173,7 @@ module.exports = {
 		// })
 		// .catch(next);
 	},
-	fetchDirectory (req, res, next) {
-		var db = Data.getDatabaseConnection(req.session.clinic.clinic_data);
-		let Patientdb = db.model('patient', Patient.patientSchema);
-
-		Patientdb.findById({ _id: req.params.id })
-		.then(patient => {
-			// var dir = req.body.dir.split('/');
-			// var files = patient.files;
-			// dir.map((item) => files = files[item]);
-			res.send(patient.files);
-		})
-		.catch(next);
-	},
+	
 	deleteDirectory (req, res, next) {
 		var db = Data.getDatabaseConnection(req.session.clinic.clinic_data);
 		let Patientdb = db.model('patient', Patient.patientSchema);

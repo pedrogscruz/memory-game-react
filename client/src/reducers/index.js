@@ -1,12 +1,12 @@
 import { combineReducers } from 'redux';
 import { reducer as reduxForm } from 'redux-form';
 
-import patientsSearchReducer from './patientsSearchReducer';
+import themeReducer from './themeReducer';
 import playerReducer from './playerReducer';
 import configReducer from './configReducer';
 
 export default combineReducers({
-	patientsSearch: patientsSearchReducer,
+	theme: themeReducer,
 	player: playerReducer,
 	config: configReducer,
 });

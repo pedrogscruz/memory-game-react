@@ -6,6 +6,7 @@ import { styles } from './GameStyles';
 import 'react-awesome-button/dist/themes/theme-eric.css';
 
 // import { savePausedGame, saveFinishedGame } from '../../../actions/player'
+import { fetchTheme } from '../../../actions/theme'
 
 import { AwesomeButton } from 'react-awesome-button';
 import PropTypes from 'prop-types';
@@ -84,6 +85,19 @@ class Game extends React.Component {
           this.refs.time.innerHTML = seconds;
       }, 50);
     }
+    const { fetchTheme } = this.props;
+    fetchTheme((cards) => {
+      var cards = [];
+      var positionRepeat = [];
+      while(cards.length < parseInt(this.props.gameConfig.cardsQty/2)) {
+        var randomnumber = Math.floor(Math.random()*cards.length);
+        if(!cards.contains(randomnumber)) {
+          cards.push(randomnumber);
+          // while(cards.length < parseInt(this.props.gameConfig.cardsQty/2)) {
+          // this.state.details.push(cards[randomnumber]);
+        }
+      }
+    });
   }
   renderCards() {
     var matrix = [];
@@ -165,4 +179,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps)(Game);
+export default connect(mapStateToProps, {fetchTheme})(Game);

@@ -1,7 +1,7 @@
 import axios from 'axios';
 // import { SHOW_MESSAGE } from '../actions/systemMsg';
 
-export const FETCH_PATIENTS = 'FETCH_PATIENTS';
+export const FETCH_THEME = 'FETCH_THEME';
 export const PAGINATE_PATIENTS = 'PAGINATE_PATIENTS';
 export const SELECT_ALL = 'SELECT_ALL';
 export const CLEAR_PATIENTS = 'CLEAR_PATIENTS';
@@ -9,12 +9,13 @@ export const SELECT_PATIENT = 'SELECT_PATIENT';
 export const FILTER_PATIENT = 'FILTER_PATIENT';
 export const HEADER_LISTENER = 'HEADER_LISTENER';
 
-export function fetchPatients(value, callback) {
+export function fetchTheme(callback) {
 	return async dispatch => {
 		try {
-			const res = await axios.post('/api/patient/search', value);
-			dispatch({ type: FETCH_PATIENTS, payload: res.data });
-			callback(res.data);
+			const res = await axios.get('/api/cards');
+			dispatch({ type: FETCH_THEME, payload: res.data });
+			if (callback)
+				callback(res.data);
 		} catch(err) {
 			console.log(err);
 		}
