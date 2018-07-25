@@ -30,7 +30,7 @@ class Game extends React.Component {
   }
   componentDidMount() {
     const { history } = this.props;
-    console.log(history);
+    this.renderPlayers();
     // if (!this.props.gameConfig) {
     //   history.push('/config');
     //   return;
@@ -59,16 +59,47 @@ class Game extends React.Component {
     }
     return matrix;
   }
+  renderPlayer (plyr) {
+    return (
+      <div>
+        <div>{plyr.points?plyr.points:0}</div>
+        <div>{plyr.nickname}</div>
+      </div>
+    )
+  }
   render() {
     return (
       <div className={css(styles.squares)}>
-        <center></center>
-        <div className={css(styles.grid)}>
-          <div></div>
-          <div>{this.renderCards()}</div>
-          <div></div>
-        </div>
-        <center></center>
+        {this.props.playersNumber === 2 ?
+          <div>
+            <center>{this.renderPlayer(this.props.players[this.state.turn%2+1])}</center>
+            <div className={css(styles.grid)}>
+              {this.renderCards()}
+            </div>
+            <center>{this.renderPlayer(this.props.players[this.state.turn%2])}</center>
+          </div>
+        :
+        this.props.playersNumber === 3 ?
+          <div>
+            <div className={css(styles.grid)}>
+              <div>{this.renderPlayer(this.props.players[this.state.turn%2+1])}</div>
+              <div>{this.renderCards()}</div>
+              <div>{this.renderPlayer(this.props.players[this.state.turn%2+2])}</div>
+            </div>
+            <center>{this.renderPlayer(this.props.players[this.state.turn%2])}</center>
+          </div>
+        :
+        this.props.playersNumber === 4 ?
+          <div>
+            <center>{this.renderPlayer(this.props.players[this.state.turn%2+2])}</center>
+            <div className={css(styles.grid)}>
+              <div>{this.renderPlayer(this.props.players[this.state.turn%2+1])}</div>
+              <div>{this.renderCards()}</div>
+              <div>{this.renderPlayer(this.props.players[this.state.turn%2+3])}</div>
+            </div>
+            <center>{this.renderPlayer(this.props.players[this.state.turn%2+1])}</center>
+          </div>
+        :null}
       </div>
     );
   }
