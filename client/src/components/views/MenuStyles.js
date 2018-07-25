@@ -8,7 +8,7 @@ export const styles = StyleSheet.create({
 		textAlign: 'center',
 		display: 'table-cell',
 		verticalAlign: 'middle',
-		padding: '1rem'
+		padding: '.5rem'
 	},
 	title: {
 		textAlign: 'center',
@@ -36,5 +36,11 @@ export const styles = StyleSheet.create({
     border: `1px solid ${COLORS.white}`,
 		padding: '1rem',
 		borderRadius: '5px'
-	}
+	},
+	table: {
+    borderSpacing: '.5rem',
+    borderCollapse: 'separate',
+    textAlign: 'left',
+    width: '100%'
+  }
 });

@@ -23,5 +23,24 @@ export const styles = StyleSheet.create({
   image: {
     maxHeight: "100px",
     maxWidth: "100px"
-  }
+	},
+	playerGrid: {
+		display: 'grid',
+		gridTemplateColumns: 'auto auto',
+		gridColumnGap: '1rem',
+		border: `1px solid ${COLORS.white} !important`,
+    backgroundColor: COLORS.black,
+    color: '#fff',
+    fontWeight: 'bold',
+    padding: '0.25rem .5rem',
+    borderRadius: '4px !important',
+		height: '34px',
+		width: 'fit-content'
+	},
+	timePerMove: {
+		position: 'absolute',
+		left: 10,
+		bottom: 10,
+		zIndex: 10,
+	}
 });

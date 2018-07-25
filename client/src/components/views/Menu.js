@@ -10,37 +10,49 @@ import { AwesomeButton } from 'react-awesome-button';
 class Menu extends React.Component {
 	constructor (props) {
 		super(props);
-		const { match } = props;
-		this.state = {
-			options: [
-				{
-					text: 'Play',
-					path: `${match.url}config`
-				},
-				{
-					text: 'Saved Games',
-					path: `${match.url}saved`
-				},
-				{
-					text: 'Create Theme',
-					path: `${match.url}theme`
-				},
-				{
-					text: 'Ranking',
-					path: `${match.url}ranking`
-				}
-			]
-		}
 	}
 	// render the options of the menu
 	renderMenuOption (option) {
+		const { match } = this.props;
 		return (
-			<NavLink
-				key={option.path}
-				to={option.path}
-			>
-				<AwesomeButton type="primary" size="large">{option.text}</AwesomeButton>
-			</NavLink>
+			<table className={css(styles.table)}>
+				<tr>
+					<td>
+						<NavLink
+							key={`${match.url}config`}
+							to={`${match.url}config`}
+						>
+							<AwesomeButton type="primary" size="large">Play</AwesomeButton>
+						</NavLink>
+					</td>
+					<td>
+						<NavLink
+							key={`${match.url}saved`}
+							to={`${match.url}saved`}
+						>
+							<AwesomeButton type="primary" size="large">Saved Games</AwesomeButton>
+						</NavLink>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<NavLink
+							key={`${match.url}theme`}
+							to={`${match.url}theme`}
+						>
+							<AwesomeButton type="primary" size="large">Create Theme</AwesomeButton>
+						</NavLink>
+					</td>
+						<NavLink
+							key={`${match.url}ranking`}
+							to={`${match.url}ranking`}
+						>
+							<AwesomeButton type="primary" size="large">Ranking</AwesomeButton>
+						</NavLink>
+					<td>
+					</td>
+				</tr>
+			</table>
 		);
 	}
 	render () {
@@ -49,7 +61,7 @@ class Menu extends React.Component {
 				<div className={css(styles.grid)}>
 					<div className={css(styles.title)}>MEMORY<br/>GAME</div>
 					<div className={css(styles.options)}>
-						{this.state.options.map((opt) => this.renderMenuOption(opt))}
+						{this.renderMenuOption()}
 					</div>
 				</div>
 			</div>

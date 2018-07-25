@@ -24,12 +24,12 @@
     "i18n-react": "^0.6.3",
     "immutable": "^3.8.2",
     "just-diff-apply": "^1.0.1",
-    "moment": "2.18.1",
+    "moment": "^2.22.2",
     "react": "^15.6.1",
     "react-autosuggest": "^9.3.2",
     "react-awesome-button": "^4.2.1",
     "react-big-calendar": "^0.18.0",
-    "react-color": "^2.14.0",
+    "react-color": "^2.14.1",
     "react-currency-masked-input": "^2.2.0",
     "react-day-picker": "^6.2.1",
     "react-dnd": "^2.5.4",
@@ -42,12 +42,12 @@
     "react-input-mask": "^1.0.7",
     "react-modal": "^2.3.2",
     "react-particles-js": "^2.1.2",
-    "react-scripts": "1.0.10",
+    "react-scripts": "^1.1.4",
     "react-select": "^1.2.1",
     "react-simple-currency": "^1.0.16",
     "react-three-renderer-objects": "0.0.6",
     "react-tooltip": "^3.3.0",
-    "recharts": "^1.0.0-beta.10",
+    "recharts": "^1.1.0",
     "socket.io-client": "^2.0.4",
     "three-mtl-loader": "^1.0.2",
     "three-obj-loader": "^1.1.3"
@@ -59,7 +59,7 @@
     "react-router-dom": "^4.1.2",
     "react-styleguidist": "^6.0.25",
     "redux": "^3.7.2",
-    "redux-form": "^7.0.3",
+    "redux-form": "^7.4.2",
     "redux-thunk": "^2.2.0"
   }
 }
