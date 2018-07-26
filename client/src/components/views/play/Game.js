@@ -17,36 +17,47 @@ const propTypes = {
 	gameConfig: PropTypes.object,
 }
 
-// const defaultProps = {
-//   gameConfig: {
-//     playersNumber: 0,
-//     players: [],
-//     timePerMove: 0,
-//     cardsQty: 0
-//   }
-// };
-
 const defaultProps = {
   gameConfig: {
-    playersNumber: 2,
-    players: [
-      {
-        "id": "1",
-        "createdAt": "2018-07-25T03:50:34.125Z",
-        "nickname": "pedro",
-        "password": "nois"
-      },
-      {
-        "id": "2",
-        "createdAt": "2018-07-25T05:55:03.731Z",
-        "nickname": "emerson",
-        "password": "1234"
-      }
-    ],
-    timePerMove: 10,
-    cardsQty: 16
+    playersNumber: 0,
+    players: [],
+    timePerMove: 0,
+    cardsQty: 0
   }
 };
+
+// const defaultProps = {
+//   cardsQty:56,
+//   players: [
+//     {id: "1", createdAt: "2018-07-25T03:50:34.125Z", nickname: "pedro", password: "nois", exists: true},
+//     {id: "2", createdAt: "2018-07-25T05:55:03.731Z", nickname: "emerson", password: "1234", exists: true},
+//     {id: "6", createdAt: "2018-07-25T16:37:39.513Z", nickname: "asdjskjx", password: "abc", exists: true}
+//   ],
+//   playersNumber:3,
+//   timePerMove:5
+// }
+
+// const defaultProps = {
+//   gameConfig: {
+//     playersNumber: 2,
+//     players: [
+//       {
+//         "id": "1",
+//         "createdAt": "2018-07-25T03:50:34.125Z",
+//         "nickname": "pedro",
+//         "password": "nois"
+//       },
+//       {
+//         "id": "2",
+//         "createdAt": "2018-07-25T05:55:03.731Z",
+//         "nickname": "emerson",
+//         "password": "1234"
+//       }
+//     ],
+//     timePerMove: 10,
+//     cardsQty: 16
+//   }
+// };
 
 class Game extends React.Component {
   constructor (props) {
@@ -80,6 +91,8 @@ class Game extends React.Component {
       var cards = [], position = [], details = [];
       for (var i=0; i<this.props.gameConfig.cardsQty; i++)
         details.push({status: 'closed'});
+      console.log(this.props);
+      console.log(details)
       while(cards.length < parseInt(this.props.gameConfig.cardsQty/2)) {
         var randomCard = Math.floor(Math.random()*theme.length);
         if(!cards.includes(randomCard)) {
@@ -104,10 +117,24 @@ class Game extends React.Component {
     this.state.interval = setInterval(() => {
       var seconds = (Math.round((this.state.end - new Date()) / 100) / 10).toFixed(1);
       if (seconds <= 0) {
+        this.refs.time.innerHTML = '0.0';
         this.state.end = new Date();
         this.state.end.setSeconds(this.state.end.getSeconds() + 10);
-        this.setState((prevState) => {
-          return { turn: (prevState.turn+1)%this.props.gameConfig.playersNumber }
+        this.setState({firstPlay: false, removeEvents: true}, () => {
+          clearInterval(this.state.interval);
+          setTimeout(() => {
+            this.setState((prevState) => {
+              return {
+                removeEvents: false,
+                turn: (prevState.turn+1)%this.props.gameConfig.playersNumber,
+                details: prevState.details.map((dtl) => {
+                  if (dtl.status === 'open')
+                    dtl.status = 'closed';
+                  return dtl;
+                })
+              }
+            }, () => this.resetInterval());
+          }, 1400);
         });
       }
       else if (this.refs.time)
@@ -124,7 +151,7 @@ class Game extends React.Component {
         this.state.details[this.state.firstPlay.index].hitter = {...this.state.players[this.state.turn]};
         this.setState({firstPlay: false, removeEvents: true}, () => {
           clearInterval(this.state.interval);
-          setTimeout(() => this.setState({removeEvents: false}, () => this.resetInterval()), 2000);
+          setTimeout(() => this.setState({removeEvents: false}, () => this.resetInterval()), 1400);
         });
       }
       else {
@@ -136,7 +163,10 @@ class Game extends React.Component {
             this.state.details[index].status = 'closed';
             this.state.details[firstIndex].status = 'closed'
             this.setState((prevState) => {
-              return { turn: (prevState.turn+1)%this.props.gameConfig.playersNumber, removeEvents: false }
+              return {
+                removeEvents: false,
+                turn: (prevState.turn+1)%this.props.gameConfig.playersNumber
+              }
             }, () => this.resetInterval());
           }, 2000);
         });
@@ -176,10 +206,10 @@ class Game extends React.Component {
   }
   renderPlayer (plyr, principal) {
     return (
-      <div className={css(styles.playerGrid, principal && styles.principal)}>
-        <div>{plyr.nickname}</div>
-        <div>{plyr.points}</div>
-      </div>
+      <span className={css(styles.playerGrid, principal && styles.principal)}>
+        <span>{plyr.nickname}</span>
+        <span>{plyr.points}</span>
+      </span>
     )
   }
   render() {
@@ -214,7 +244,7 @@ class Game extends React.Component {
           <div>
             <div className={css(styles.grid)}>
               <div>{this.renderPlayer(this.state.players[(this.state.turn+1)%3])}</div>
-              <div>{this.renderCards()}</div>
+              <div>{this.state.details.length === this.props.gameConfig.cardsQty && this.renderCards()}</div>
               <div>{this.renderPlayer(this.state.players[(this.state.turn+2)%3])}</div>
             </div>
             <center>{this.renderPlayer(this.state.players[this.state.turn], true)}</center>
@@ -225,7 +255,7 @@ class Game extends React.Component {
             <center>{this.renderPlayer(this.state.players[(this.state.turn+2)%4])}</center>
             <div className={css(styles.grid)}>
               <div>{this.renderPlayer(this.state.players[(this.state.turn+1)%4])}</div>
-              <div>{this.renderCards()}</div>
+              <div>{this.state.details.length === this.props.gameConfig.cardsQty && this.renderCards()}</div>
               <div>{this.renderPlayer(this.state.players[(this.state.turn+3)%4])}</div>
             </div>
             <center>{this.renderPlayer(this.state.players[this.state.turn], true)}</center>
