@@ -92,12 +92,11 @@ class Game extends React.Component {
     setInterval(() => {
       var now = parseInt(new Date().getTime() / 1000) - parseInt(this.state.start.getTime() / 1000),
       hours = parseInt(now/3600);
-      console.log(now);
       now -= 3600 * hours;
       var min = parseInt(now/60);
       now -= 60 * min;
       this.refs.matchTime.innerHTML = `${hours>9?hours:('00'+hours).slice(-2)}:${('00'+min).slice(-2)}:${('00'+now).slice(-2)}`;
-    }, 900);
+    }, 450);
     const { fetchTheme } = this.props;
     fetchTheme((theme) => {
       var cards = [], position = [], details = [];
@@ -130,7 +129,7 @@ class Game extends React.Component {
         this.refs.time.innerHTML = '0.0';
         this.state.end = new Date();
         this.state.end.setSeconds(this.state.end.getSeconds() + 10);
-        this.refs.message.innerHTML = 'lost the turn';
+        this.refs.message.innerHTML = 'Lose a turn';
         this.setState({firstPlay: false, removeEvents: true}, () => {
           clearInterval(this.state.interval);
           setTimeout(() => {
@@ -146,7 +145,7 @@ class Game extends React.Component {
                 })
               }
             }, () => this.resetInterval());
-          }, 1400);
+          }, 1750);
         });
       }
       else if (this.refs.time)
@@ -161,19 +160,28 @@ class Game extends React.Component {
         this.state.details[this.state.firstPlay.index].status = 'hit';
         this.state.players[this.state.turn].points++;
         this.state.details[this.state.firstPlay.index].hitter = {...this.state.players[this.state.turn]};
-        this.refs.message.innerHTML = 'hit!';
+        this.refs.message.innerHTML = 'Hit!';
         this.setState({firstPlay: false, removeEvents: true}, () => {
-          clearInterval(this.state.interval);
-          setTimeout(() => {
-            this.refs.message.innerHTML = '';
-            this.setState({removeEvents: false}, () => this.resetInterval())
-          }, 1400);
+          var points = 0, best = [{points: 0, player: {}}];
+          this.state.players.map((plyr) => {
+            points += plyr.points;
+            // if (plyr.points > 0)
+          });
+          if (points == this.props.gameConfig.cardsQty/2)
+            this.refs.message.innerHTML = 'Winner';
+          else {
+            clearInterval(this.state.interval);
+            setTimeout(() => {
+              this.refs.message.innerHTML = '';
+              this.setState({removeEvents: false}, () => this.resetInterval())
+            }, 1750);
+          }
         });
       }
       else {
         this.state.details[index].status = 'open';
         firstIndex = this.state.firstPlay.index;
-        this.refs.message.innerHTML = 'missed';
+        this.refs.message.innerHTML = 'Missed';
         this.setState({firstPlay: false, removeEvents: true}, () => {
           clearInterval(this.state.interval);
           setTimeout(() => {
@@ -186,7 +194,7 @@ class Game extends React.Component {
                 turn: (prevState.turn+1)%this.props.gameConfig.playersNumber
               }
             }, () => this.resetInterval());
-          }, 2000);
+          }, 1750);
         });
       }
     }
@@ -255,7 +263,7 @@ class Game extends React.Component {
             <span ref='message'></span>
           </center>
           <AwesomeButton
-            type="a"
+            type="secondary"
             action={() => {}}
           >
             Save
