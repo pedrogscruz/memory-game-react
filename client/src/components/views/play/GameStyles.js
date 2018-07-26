@@ -59,10 +59,21 @@ export const styles = StyleSheet.create({
 		bottom: 10,
 		zIndex: 10,
 	},
+	matchTime: {
+		position: 'fixed',
+		right: 10,
+		bottom: 10,
+		zIndex: 10,
+	},
 	principal: {
 		width: '200px',
     height: '50px',
     fontSize: '30px',
     marginTop: '1rem'
+	},
+	gridTop: {
+		display: 'grid',
+		gridTemplateColumns: 'auto 1fr auto',
+		marginBottom: '1rem'
 	}
 });

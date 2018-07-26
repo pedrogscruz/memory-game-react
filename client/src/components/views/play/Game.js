@@ -17,28 +17,27 @@ const propTypes = {
 	gameConfig: PropTypes.object,
 }
 
-const defaultProps = {
-  gameConfig: {
-    playersNumber: 0,
-    players: [],
-    timePerMove: 0,
-    cardsQty: 0
-  }
-};
-
 // const defaultProps = {
 //   gameConfig: {
-//   cardsQty:56,
-//     players: [
-//       {id: "1", createdAt: "2018-07-25T03:50:34.125Z", nickname: "pedro", password: "nois", exists: true},
-//       {id: "2", createdAt: "2018-07-25T05:55:03.731Z", nickname: "emerson", password: "1234", exists: true},
-//       {id: "6", createdAt: "2018-07-25T16:37:39.513Z", nickname: "asdjskjx", password: "abc", exists: true},
-//       {id: "6", createdAt: "2018-07-25T16:37:39.513Z", nickname: "asdjskjx", password: "abc", exists: true}
-//     ],
-//     playersNumber:4,
-//     timePerMove:5
+//     playersNumber: 0,
+//     players: [],
+//     timePerMove: 0,
+//     cardsQty: 0
 //   }
-// }
+// };
+
+const defaultProps = {
+  gameConfig: {
+  cardsQty:56,
+    players: [
+      {id: "1", createdAt: "2018-07-25T03:50:34.125Z", nickname: "pedro", password: "nois", exists: true},
+      {id: "2", createdAt: "2018-07-25T05:55:03.731Z", nickname: "emerson", password: "1234", exists: true},
+      {id: "6", createdAt: "2018-07-25T16:37:39.513Z", nickname: "asdjskjx", password: "abc", exists: true}
+    ],
+    playersNumber:3,
+    timePerMove:5
+  }
+}
 
 // const defaultProps = {
 //   gameConfig: {
@@ -79,6 +78,7 @@ class Game extends React.Component {
       interval: false,
       modalSave: false,
       firstPlay: false,
+      start: new Date(),
       modalResult: false,
       removeEvents: false,
       time: props.gameConfig.timePerMove,
@@ -89,6 +89,15 @@ class Game extends React.Component {
   componentDidMount() {
     if (!this.state.interval)
       this.resetInterval();
+    setInterval(() => {
+      var now = parseInt(new Date().getTime() / 1000) - parseInt(this.state.start.getTime() / 1000),
+      hours = parseInt(now/3600);
+      console.log(now);
+      now -= 3600 * hours;
+      var min = parseInt(now/60);
+      now -= 60 * min;
+      this.refs.matchTime.innerHTML = `${hours>9?hours:('00'+hours).slice(-2)}:${('00'+min).slice(-2)}:${('00'+now).slice(-2)}`;
+    }, 900);
     const { fetchTheme } = this.props;
     fetchTheme((theme) => {
       var cards = [], position = [], details = [];
@@ -121,9 +130,11 @@ class Game extends React.Component {
         this.refs.time.innerHTML = '0.0';
         this.state.end = new Date();
         this.state.end.setSeconds(this.state.end.getSeconds() + 10);
+        this.refs.message.innerHTML = 'lost the turn';
         this.setState({firstPlay: false, removeEvents: true}, () => {
           clearInterval(this.state.interval);
           setTimeout(() => {
+            this.refs.message.innerHTML = '';
             this.setState((prevState) => {
               return {
                 removeEvents: false,
@@ -150,17 +161,23 @@ class Game extends React.Component {
         this.state.details[this.state.firstPlay.index].status = 'hit';
         this.state.players[this.state.turn].points++;
         this.state.details[this.state.firstPlay.index].hitter = {...this.state.players[this.state.turn]};
+        this.refs.message.innerHTML = 'hit!';
         this.setState({firstPlay: false, removeEvents: true}, () => {
           clearInterval(this.state.interval);
-          setTimeout(() => this.setState({removeEvents: false}, () => this.resetInterval()), 1400);
+          setTimeout(() => {
+            this.refs.message.innerHTML = '';
+            this.setState({removeEvents: false}, () => this.resetInterval())
+          }, 1400);
         });
       }
       else {
         this.state.details[index].status = 'open';
         firstIndex = this.state.firstPlay.index;
+        this.refs.message.innerHTML = 'missed';
         this.setState({firstPlay: false, removeEvents: true}, () => {
           clearInterval(this.state.interval);
           setTimeout(() => {
+            this.refs.message.innerHTML = '';
             this.state.details[index].status = 'closed';
             this.state.details[firstIndex].status = 'closed'
             this.setState((prevState) => {
@@ -224,13 +241,27 @@ class Game extends React.Component {
           })} /> */}
           <div ref={'time'}></div>
         </div>
-        <AwesomeButton
-          type="secondary"
-          action={() => this.setState({modalSave: true})}
-        >
-          Menu
-        </AwesomeButton>
-        <div style={{marginTop: '1rem'}}>
+        <div className={css(styles.matchTime)}>
+          <div ref={'matchTime'}></div>
+        </div>
+        <div className={css(styles.gridTop)}>
+          <AwesomeButton
+            type="secondary"
+            action={() => this.setState({modalSave: true})}
+          >
+            Menu
+          </AwesomeButton>
+          <center>
+            <span ref='message'></span>
+          </center>
+          <AwesomeButton
+            type="a"
+            action={() => {}}
+          >
+            Save
+          </AwesomeButton>
+        </div>
+        <div>
           {this.props.gameConfig.playersNumber === 2 ?
             <div>
               <center>{this.renderPlayer(this.state.players[(this.state.turn+1)%2])}</center>
