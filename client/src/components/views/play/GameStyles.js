@@ -7,6 +7,19 @@ export const styles = StyleSheet.create({
 		display: 'grid',
 		gridTemplateColumns: '1fr auto 1fr',
 		gridColumnGap: '1rem',
+		':nth-child(1n) > :first-child': {
+			textAlign: 'right',
+			display: 'table',
+			height: '100%'
+    },
+    ':nth-child(1n) > :last-child': {
+      display: 'table',
+			height: '100%'
+		}
+	},
+	middleAlign: {
+		display: 'table-cell',
+		verticalAlign: 'middle'
 	},
 	squares: {
 		height: '100vh',
@@ -28,7 +41,7 @@ export const styles = StyleSheet.create({
 		pointerEvents: 'none'
 	},
 	playerGrid: {
-		display: 'grid',
+		display: 'inline-grid',
 		gridTemplateColumns: 'auto auto',
 		gridColumnGap: '1rem',
 		border: `1px solid ${COLORS.white} !important`,
@@ -41,7 +54,7 @@ export const styles = StyleSheet.create({
 		width: 'fit-content'
 	},
 	timePerMove: {
-		position: 'absolute',
+		position: 'fixed',
 		left: 10,
 		bottom: 10,
 		zIndex: 10,

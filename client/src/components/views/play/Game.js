@@ -27,14 +27,17 @@ const defaultProps = {
 };
 
 // const defaultProps = {
+//   gameConfig: {
 //   cardsQty:56,
-//   players: [
-//     {id: "1", createdAt: "2018-07-25T03:50:34.125Z", nickname: "pedro", password: "nois", exists: true},
-//     {id: "2", createdAt: "2018-07-25T05:55:03.731Z", nickname: "emerson", password: "1234", exists: true},
-//     {id: "6", createdAt: "2018-07-25T16:37:39.513Z", nickname: "asdjskjx", password: "abc", exists: true}
-//   ],
-//   playersNumber:3,
-//   timePerMove:5
+//     players: [
+//       {id: "1", createdAt: "2018-07-25T03:50:34.125Z", nickname: "pedro", password: "nois", exists: true},
+//       {id: "2", createdAt: "2018-07-25T05:55:03.731Z", nickname: "emerson", password: "1234", exists: true},
+//       {id: "6", createdAt: "2018-07-25T16:37:39.513Z", nickname: "asdjskjx", password: "abc", exists: true},
+//       {id: "6", createdAt: "2018-07-25T16:37:39.513Z", nickname: "asdjskjx", password: "abc", exists: true}
+//     ],
+//     playersNumber:4,
+//     timePerMove:5
+//   }
 // }
 
 // const defaultProps = {
@@ -91,8 +94,6 @@ class Game extends React.Component {
       var cards = [], position = [], details = [];
       for (var i=0; i<this.props.gameConfig.cardsQty; i++)
         details.push({status: 'closed'});
-      console.log(this.props);
-      console.log(details)
       while(cards.length < parseInt(this.props.gameConfig.cardsQty/2)) {
         var randomCard = Math.floor(Math.random()*theme.length);
         if(!cards.includes(randomCard)) {
@@ -229,38 +230,50 @@ class Game extends React.Component {
         >
           Menu
         </AwesomeButton>
-        {this.props.gameConfig.playersNumber === 2 ?
-          <div>
-            <center>{this.renderPlayer(this.state.players[(this.state.turn+1)%2])}</center>
-            <center>
-              <div>
-                {this.state.details.length === this.props.gameConfig.cardsQty && this.renderCards()}
+        <div style={{marginTop: '1rem'}}>
+          {this.props.gameConfig.playersNumber === 2 ?
+            <div>
+              <center>{this.renderPlayer(this.state.players[(this.state.turn+1)%2])}</center>
+              <center>
+                <div>
+                  {this.state.details.length === this.props.gameConfig.cardsQty && this.renderCards()}
+                </div>
+              </center>
+              <center>{this.renderPlayer(this.state.players[this.state.turn], true)}</center>
+            </div>
+          :
+          this.props.gameConfig.playersNumber === 3 ?
+            <div>
+              <div className={css(styles.grid)}>
+                <div>
+                  {this.renderPlayer(this.state.players[(this.state.turn+1)%3])}
+                </div>
+                <div>{this.state.details.length === this.props.gameConfig.cardsQty && this.renderCards()}</div>
+                <div>{this.renderPlayer(this.state.players[(this.state.turn+2)%3])}</div>
               </div>
-            </center>
-            <center>{this.renderPlayer(this.state.players[this.state.turn], true)}</center>
-          </div>
-        :
-        this.props.gameConfig.playersNumber === 3 ?
-          <div>
-            <div className={css(styles.grid)}>
-              <div>{this.renderPlayer(this.state.players[(this.state.turn+1)%3])}</div>
-              <div>{this.state.details.length === this.props.gameConfig.cardsQty && this.renderCards()}</div>
-              <div>{this.renderPlayer(this.state.players[(this.state.turn+2)%3])}</div>
+              <center>{this.renderPlayer(this.state.players[this.state.turn], true)}</center>
             </div>
-            <center>{this.renderPlayer(this.state.players[this.state.turn], true)}</center>
-          </div>
-        :
-        this.props.gameConfig.playersNumber === 4 ?
-          <div>
-            <center>{this.renderPlayer(this.state.players[(this.state.turn+2)%4])}</center>
-            <div className={css(styles.grid)}>
-              <div>{this.renderPlayer(this.state.players[(this.state.turn+1)%4])}</div>
-              <div>{this.state.details.length === this.props.gameConfig.cardsQty && this.renderCards()}</div>
-              <div>{this.renderPlayer(this.state.players[(this.state.turn+3)%4])}</div>
+          :
+          this.props.gameConfig.playersNumber === 4 ?
+            <div>
+              <center>{this.renderPlayer(this.state.players[(this.state.turn+2)%4])}</center>
+              <div className={css(styles.grid)}>
+                <div>
+                  <div className={css(styles.middleAlign)}>
+                    {this.renderPlayer(this.state.players[(this.state.turn+1)%4])}
+                  </div>
+                </div>
+                <div>{this.state.details.length === this.props.gameConfig.cardsQty && this.renderCards()}</div>
+                <div>
+                  <div className={css(styles.middleAlign)}>
+                    {this.renderPlayer(this.state.players[(this.state.turn+3)%4])}
+                  </div>
+                </div>
+              </div>
+              <center>{this.renderPlayer(this.state.players[this.state.turn], true)}</center>
             </div>
-            <center>{this.renderPlayer(this.state.players[this.state.turn], true)}</center>
-          </div>
-        :null}
+          :null}
+        </div>
       </div>
     );
   }
