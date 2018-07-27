@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 
 import { css } from 'aphrodite/no-important';
 import { styles } from './ConfigStyles';
-import 'react-awesome-button/dist/themes/theme-eric.css';
 
 import { fetchPlayers, createPlayer, verifyPassword } from '../../../actions/player'
 import { saveConfig } from '../../../actions/config'

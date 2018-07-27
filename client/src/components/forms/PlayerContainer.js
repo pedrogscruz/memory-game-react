@@ -6,6 +6,7 @@ import { styles } from './PlayerContainerStyles';
 
 import AutoComplete from '../common/AutoComplete';
 import InputField from '../common/InputField';
+import DashedList from '../lists/DashedList';
 
 const propTypes = {
 	list: PropTypes.array.isRequired,
@@ -147,7 +148,7 @@ class PlayerContainer extends React.Component {
   }
   renderPlayer (plyr, index) {
     return (
-      <div className={css(styles.container, index%2==0?styles.dark1:styles.dark2)} key={index}>
+      <div className={css(index%2==0?styles.dark1:styles.dark2)} key={index}>
         <table className={css(styles.table)}>
           <tr>
             <td>Nickname</td>
@@ -175,9 +176,7 @@ class PlayerContainer extends React.Component {
   render () {
     const { list, qtd } = this.props;
     return (
-      <div className={css(styles.dashed)}>
-        {this.state.players.map((plyr, index) => this.renderPlayer(plyr, index))}
-      </div>
+      <DashedList items={this.state.players.map((plyr, index) => this.renderPlayer(plyr, index))} />
     );
   }
 }

@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 
 import { css } from 'aphrodite/no-important';
 import { styles } from './GameStyles';
-import 'react-awesome-button/dist/themes/theme-eric.css';
 
 // import { savePausedGame, saveFinishedGame } from '../../../actions/player'
 import { fetchTheme } from '../../../actions/theme'
@@ -11,7 +10,7 @@ import { fetchTheme } from '../../../actions/theme'
 import { AwesomeButton } from 'react-awesome-button';
 import PropTypes from 'prop-types';
 
-import Timer from '../../common/Timer';
+// import Timer from '../../common/Timer';
 
 const propTypes = {
 	gameConfig: PropTypes.object,
@@ -77,7 +76,7 @@ class Game extends React.Component {
       details: [],
       interval: false,
       modalSave: false,
-      firstPlay: false,
+      firstMove: false,
       start: new Date(),
       modalResult: false,
       removeEvents: false,
@@ -126,11 +125,18 @@ class Game extends React.Component {
     this.state.interval = setInterval(() => {
       var seconds = (Math.round((this.state.end - new Date()) / 100) / 10).toFixed(1);
       if (seconds <= 0) {
+        var message = 'Lose a turn';
         this.refs.time.innerHTML = '0.0';
         this.state.end = new Date();
         this.state.end.setSeconds(this.state.end.getSeconds() + this.props.gameConfig.timePerMove);
-        this.refs.message.innerHTML = 'Lose a turn';
-        this.setState({firstPlay: false, removeEvents: true}, () => {
+        this.refs.message.innerHTML = message;
+        const {id, nickname} = this.state.players[this.state.turn];
+        this.state.moves.push({
+          player: {id, nickname},
+          firstMove: this.state.firstMove.index,
+          message
+        });
+        this.setState({firstMove: false, removeEvents: true}, () => {
           clearInterval(this.state.interval);
           setTimeout(() => {
             this.refs.message.innerHTML = '';
@@ -153,15 +159,23 @@ class Game extends React.Component {
     }, 50);
   }
   verifyHit (index) {
-    if (this.state.firstPlay) {
+    if (this.state.firstMove) {
       var after = () => {}, firstIndex = -1;
-      if (this.state.firstPlay.src === this.state.details[index].src) {
+      if (this.state.firstMove.src === this.state.details[index].src) {
+        var message = 'Hit!';
         this.state.details[index].status = 'hit';
-        this.state.details[this.state.firstPlay.index].status = 'hit';
+        this.state.details[this.state.firstMove.index].status = 'hit';
         this.state.players[this.state.turn].points++;
-        this.state.details[this.state.firstPlay.index].hitter = {...this.state.players[this.state.turn]};
-        this.refs.message.innerHTML = 'Hit!';
-        this.setState({firstPlay: false, removeEvents: true}, () => {
+        this.state.details[this.state.firstMove.index].hitter = {...this.state.players[this.state.turn]};
+        this.refs.message.innerHTML = message;
+        const {id, nickname} = this.state.players[this.state.turn];
+        this.state.moves.push({
+          player: {id, nickname},
+          firstMove: this.state.firstMove.index,
+          secondMove: index,
+          message
+        });
+        this.setState({firstMove: false, removeEvents: true}, () => {
           var points = 0, best = [{points: 0, player: {}}];
           this.state.players.map((plyr) => {
             points += plyr.points;
@@ -179,10 +193,18 @@ class Game extends React.Component {
         });
       }
       else {
+        var message = 'Missed';
         this.state.details[index].status = 'open';
-        firstIndex = this.state.firstPlay.index;
-        this.refs.message.innerHTML = 'Missed';
-        this.setState({firstPlay: false, removeEvents: true}, () => {
+        firstIndex = this.state.firstMove.index;
+        this.refs.message.innerHTML = message;
+        const {id, nickname} = this.state.players[this.state.turn];
+        this.state.moves.push({
+          player: {id, nickname},
+          firstMove: this.state.firstMove.index,
+          secondMove: index,
+          message
+        });
+        this.setState({firstMove: false, removeEvents: true}, () => {
           clearInterval(this.state.interval);
           setTimeout(() => {
             this.refs.message.innerHTML = '';
@@ -200,7 +222,7 @@ class Game extends React.Component {
     }
     else {
       this.state.details[index].status = 'open';
-      this.setState({firstPlay: {...this.state.details[index], index}});
+      this.setState({firstMove: {...this.state.details[index], index}});
     }
   }
   renderCards() {
