@@ -68,7 +68,7 @@ class Game extends React.Component {
       {cardsQty: 16, x: 4, y: 4},
       {cardsQty: 24, x: 4, y: 6},
       {cardsQty: 36, x: 6, y: 6},
-      {cardsQty: 56, x: 6, y: 7},
+      {cardsQty: 56, x: 8, y: 7},
     ];
     this.state = {
       end: '',
@@ -122,13 +122,13 @@ class Game extends React.Component {
   }
   resetInterval() {
     this.state.end = new Date();
-    this.state.end.setSeconds(this.state.end.getSeconds() + 10);
+    this.state.end.setSeconds(this.state.end.getSeconds() + this.props.gameConfig.timePerMove);
     this.state.interval = setInterval(() => {
       var seconds = (Math.round((this.state.end - new Date()) / 100) / 10).toFixed(1);
       if (seconds <= 0) {
         this.refs.time.innerHTML = '0.0';
         this.state.end = new Date();
-        this.state.end.setSeconds(this.state.end.getSeconds() + 10);
+        this.state.end.setSeconds(this.state.end.getSeconds() + this.props.gameConfig.timePerMove);
         this.refs.message.innerHTML = 'Lose a turn';
         this.setState({firstPlay: false, removeEvents: true}, () => {
           clearInterval(this.state.interval);
