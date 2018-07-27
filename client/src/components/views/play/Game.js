@@ -9,8 +9,10 @@ import { fetchTheme } from '../../../actions/theme'
 
 import { AwesomeButton } from 'react-awesome-button';
 import PropTypes from 'prop-types';
+import { matrixExample } from '../../_constants/matrix';
 
-// import Timer from '../../common/Timer';
+import BlackModal from '../../modal/BlackModal';
+import ModalFinishGame from '../../forms/ModalFinishGame';
 
 const propTypes = {
 	gameConfig: PropTypes.object,
@@ -27,14 +29,14 @@ const propTypes = {
 
 const defaultProps = {
   gameConfig: {
-  cardsQty:56,
+  cardsQty: 16,
     players: [
       {id: "1", createdAt: "2018-07-25T03:50:34.125Z", nickname: "pedro", password: "nois", exists: true},
       {id: "2", createdAt: "2018-07-25T05:55:03.731Z", nickname: "emerson", password: "1234", exists: true},
       {id: "6", createdAt: "2018-07-25T16:37:39.513Z", nickname: "asdjskjx", password: "abc", exists: true}
     ],
     playersNumber:3,
-    timePerMove:5
+    timePerMove:10
   }
 }
 
@@ -63,23 +65,19 @@ const defaultProps = {
 class Game extends React.Component {
   constructor (props) {
     super(props);
-    const matrixExample = [
-      {cardsQty: 16, x: 4, y: 4},
-      {cardsQty: 24, x: 4, y: 6},
-      {cardsQty: 36, x: 6, y: 6},
-      {cardsQty: 56, x: 8, y: 7},
-    ];
     this.state = {
       end: '',
       turn: 0,
       moves: [],
       details: [],
+      gameTime: false,
       interval: false,
       modalSave: false,
       firstMove: false,
       start: new Date(),
       modalResult: false,
       removeEvents: false,
+      showFinalModal: false,
       time: props.gameConfig.timePerMove,
       players: props.gameConfig.players.map(item => { return {...item, points: 0} }),
       matrix: matrixExample.find((item) => item.cardsQty === props.gameConfig.cardsQty)
@@ -88,7 +86,7 @@ class Game extends React.Component {
   componentDidMount() {
     if (!this.state.interval)
       this.resetInterval();
-    setInterval(() => {
+    this.state.gameTime = setInterval(() => {
       var now = parseInt(new Date().getTime() / 1000) - parseInt(this.state.start.getTime() / 1000),
       hours = parseInt(now/3600);
       now -= 3600 * hours;
@@ -126,16 +124,17 @@ class Game extends React.Component {
       var seconds = (Math.round((this.state.end - new Date()) / 100) / 10).toFixed(1);
       if (seconds <= 0) {
         var message = 'Lose a turn';
-        this.refs.time.innerHTML = '0.0';
-        this.state.end = new Date();
-        this.state.end.setSeconds(this.state.end.getSeconds() + this.props.gameConfig.timePerMove);
-        this.refs.message.innerHTML = message;
         const {id, nickname} = this.state.players[this.state.turn];
         this.state.moves.push({
           player: {id, nickname},
           firstMove: this.state.firstMove.index,
+          time: parseFloat((10 - parseFloat(this.refs.time.innerHTML)).toFixed(2)),
           message
         });
+        this.refs.time.innerHTML = '0.0';
+        this.state.end = new Date();
+        this.state.end.setSeconds(this.state.end.getSeconds() + this.props.gameConfig.timePerMove);
+        this.refs.message.innerHTML = message;
         this.setState({firstMove: false, removeEvents: true}, () => {
           clearInterval(this.state.interval);
           setTimeout(() => {
@@ -166,6 +165,7 @@ class Game extends React.Component {
         this.state.details[index].status = 'hit';
         this.state.details[this.state.firstMove.index].status = 'hit';
         this.state.players[this.state.turn].points++;
+        this.state.details[index].hitter = {...this.state.players[this.state.turn]};
         this.state.details[this.state.firstMove.index].hitter = {...this.state.players[this.state.turn]};
         this.refs.message.innerHTML = message;
         const {id, nickname} = this.state.players[this.state.turn];
@@ -173,6 +173,7 @@ class Game extends React.Component {
           player: {id, nickname},
           firstMove: this.state.firstMove.index,
           secondMove: index,
+          time: parseFloat((10 - parseFloat(this.refs.time.innerHTML)).toFixed(2)),
           message
         });
         this.setState({firstMove: false, removeEvents: true}, () => {
@@ -181,8 +182,12 @@ class Game extends React.Component {
             points += plyr.points;
             // if (plyr.points > 0)
           });
-          if (points == this.props.gameConfig.cardsQty/2)
+          if (points == this.props.gameConfig.cardsQty/2) {
             this.refs.message.innerHTML = 'Winner';
+            clearInterval(this.state.interval);
+            clearInterval(this.state.gameTime);
+            this.setState({showFinalModal: true});
+          }
           else {
             clearInterval(this.state.interval);
             setTimeout(() => {
@@ -202,6 +207,7 @@ class Game extends React.Component {
           player: {id, nickname},
           firstMove: this.state.firstMove.index,
           secondMove: index,
+          time: parseFloat((10 - parseFloat(this.refs.time.innerHTML)).toFixed(2)),
           message
         });
         this.setState({firstMove: false, removeEvents: true}, () => {
@@ -248,7 +254,7 @@ class Game extends React.Component {
           </span>
         );
       }
-      matrix.push(<div className={css(styles.card)}>{line}</div>);
+      matrix.push(<div key={`line_${matrix.length}`} className={css(styles.card)}>{line}</div>);
     }
     return matrix;
   }
@@ -263,6 +269,17 @@ class Game extends React.Component {
   render() {
     return (
       <div className={css(styles.squares, this.state.removeEvents ? styles.removeEvents : null)}>
+        <BlackModal
+          show={this.state.showFinalModal}
+          inside={
+            <ModalFinishGame
+              matchTime={this.refs.matchTime?this.refs.matchTime.innerHTML:'00:00:00'}
+              players={this.props.gameConfig.players}
+              details={this.state.details}
+              moves={this.state.moves}
+            />
+          }
+        />
         <div className={css(styles.timePerMove)}>
           {/* <Timer second={10} finished={() => this.setState((prevState) => {
             return {

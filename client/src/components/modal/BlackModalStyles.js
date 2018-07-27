@@ -8,9 +8,11 @@ export const styles = StyleSheet.create({
     left: 0,
     width: '100vw',
     height: '100vh',
-    positon: 'fixed',
+    position: 'fixed',
     overflowY: 'auto',
-    backgroundColor: 'rgb(0, 0, 0, 0.4)'
+    backgroundColor: 'rgb(0, 0, 0, 0.9)',
+    zIndex: 4,
+    transition: 'opacity 1s ease-in-out'
   },
   container: {
     display: 'table',
@@ -22,6 +24,11 @@ export const styles = StyleSheet.create({
     verticalAlign: 'middle'
   },
   inside: {
-    margin: '0 auto'
+    margin: '0 auto',
+    width: 'fit-content',
+    backgroundColor: '#000',
+    borderRadius: '5px',
+    border: '1px solid #fff',
+    padding: '1rem'
   }
 });

@@ -21,8 +21,8 @@ class DashedList extends React.Component {
     const {items} = this.props;
     return (
       <div className={css(styles.dashed)}>
-        {items.map((itm) => (
-          <div className={css(styles.container)}>
+        {items.map((itm, index) => (
+          <div key={`item_${index}`} className={css(styles.container)}>
             {itm}
           </div>
         ))}

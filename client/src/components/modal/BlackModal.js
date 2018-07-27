@@ -18,6 +18,7 @@ const defaultProps = {
 
 class BlackModal extends React.Component {
   constructor (props) {
+    super(props);
     this.state = {
       display: 'none',
       opacity: 0
@@ -28,13 +29,13 @@ class BlackModal extends React.Component {
       this.setState({display: nextProps.show ? 'block' : 'none'}, () => this.setState({opacity: nextProps.show ? 1 : 0}));
   }
   render() {
-    const {inside} = this.props;
+    const {inside, show} = this.props;
     return (
-      <div className={css(styles.behind)}>
+      <div className={css(styles.behind)} style={this.state}>
         <div className={css(styles.container)}>
           <div className={css(styles.cell)}>
             <div className={css(styles.inside)}>
-              {inside}
+              {show ? inside : null}
             </div>
           </div>
         </div>
