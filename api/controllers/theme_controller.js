@@ -13,12 +13,12 @@ module.exports = {
 		res.send(files);
 	},
 	getCard(req, res, next) {
-		var parentPath = __dirname.split('\\');
+		var slash = __dirname.includes('\\') ? '\\' : '/';
+		var parentPath = __dirname.split(slash);
 		parentPath.splice(-2, 2);
 		parentPath.push('puppies');
 		parentPath.push(req.params.file);
-		var card = parentPath.join('\\');
-		console.log(card);
+		var card = parentPath.join(slash);
 		if (fs.existsSync(card))
 			res.sendFile(card);
 		else 
