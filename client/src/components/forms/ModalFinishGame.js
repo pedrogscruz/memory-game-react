@@ -29,8 +29,34 @@ class ModalFinishGame extends React.Component {
       ranking: []
     };
   }
+  componentDidMount() {
+    console.log('componentDidMount');
+    const { props } = this;
+    console.log(props);
+    var ranking = props.players.map((plyr, index) => {
+      return {...plyr, index}
+    }).sort((a, b) => 
+      (a.points > b.points) ? -1 : (a.points < b.points) ? 1 : 0
+    ).map((plyr, index) => {
+      return {pos: index+1, nickname: plyr.nickname, points: plyr.points, index: plyr.index}
+    });
+    console.log(ranking);
+    console.log(ranking.map((plyr, index) => {
+      if (index > 0 && plyr.points === ranking[index-1].points)
+        plyr.pos = ranking[index-1].pos;
+      return plyr;
+    }));
+    this.setState({
+      matrix: matrixExample.find((item) => item.cardsQty === props.details.length),
+      ranking: ranking.map((plyr, index) => {
+        if (index > 0 && plyr.points === ranking[index-1].points)
+          plyr.pos = ranking[index-1].pos;
+        return plyr;
+      })
+    });
+  }
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps);
+    console.log('componentWillReceiveProps');
     var ranking = nextProps.players.map((plyr, index) => {
       return {...plyr, index}
     }).sort((a, b) => 
@@ -81,7 +107,6 @@ class ModalFinishGame extends React.Component {
       var line = [];
       for (var k=0; k<this.state.matrix.x; k++) {
         const index = (this.state.matrix.x*i)+k;
-        console.log(index === first || index === second);
         line.push(
           <span className={css(styles.card, !(index === first || index === second)?styles.dark2:hit?stylesPlayer({index: plyrIndex, style: 'backgroundColor'}).player:styles.white)} key={`card_${index}`}>
           </span>

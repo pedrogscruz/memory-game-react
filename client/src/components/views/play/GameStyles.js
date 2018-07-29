@@ -10,7 +10,8 @@ export const styles = StyleSheet.create({
 		':nth-child(1n) > :first-child': {
 			textAlign: 'right',
 			display: 'table',
-			height: '100%'
+			height: '100%',
+			width: '100%'
     },
     ':nth-child(1n) > :last-child': {
       display: 'table',
@@ -57,13 +58,13 @@ export const styles = StyleSheet.create({
 		position: 'fixed',
 		left: 10,
 		bottom: 10,
-		zIndex: 10,
+		zIndex: 1,
 	},
 	matchTime: {
 		position: 'fixed',
 		right: 10,
 		bottom: 10,
-		zIndex: 10,
+		zIndex: 1,
 	},
 	principal: {
 		width: '200px',

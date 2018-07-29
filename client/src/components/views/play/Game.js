@@ -186,7 +186,7 @@ class Game extends React.Component {
             this.refs.message.innerHTML = 'Winner';
             clearInterval(this.state.interval);
             clearInterval(this.state.gameTime);
-            this.setState({showFinalModal: true});
+            this.setState({removeEvents: false, showFinalModal: true});
           }
           else {
             clearInterval(this.state.interval);
@@ -274,30 +274,23 @@ class Game extends React.Component {
           inside={
             <ModalFinishGame
               matchTime={this.refs.matchTime?this.refs.matchTime.innerHTML:'00:00:00'}
-              players={this.props.gameConfig.players}
+              players={this.state.players}
               details={this.state.details}
               moves={this.state.moves}
             />
           }
         />
-        <div className={css(styles.timePerMove)}>
-          {/* <Timer second={10} finished={() => this.setState((prevState) => {
-            return {
-              turn: (prevState.turn+1)%this.props.gameConfig.playersNumber
-            }
-          })} /> */}
-          <div ref={'time'}></div>
-        </div>
-        <div className={css(styles.matchTime)}>
-          <div ref={'matchTime'}></div>
-        </div>
+        <div ref={'time'} className={css(styles.timePerMove)}></div>
+        <div ref={'matchTime'} className={css(styles.matchTime)}></div>
         <div className={css(styles.gridTop)}>
-          <AwesomeButton
-            type="secondary"
-            action={() => this.setState({modalSave: true})}
-          >
-            Menu
-          </AwesomeButton>
+          <div style={{zIndex: 4}}>
+            <AwesomeButton
+              type="secondary"
+              action={() => this.setState({modalSave: true})}
+            >
+              Menu
+            </AwesomeButton>
+          </div>
           <center>
             <span ref='message'></span>
           </center>

@@ -10,9 +10,9 @@ export const styles = StyleSheet.create({
     height: '100vh',
     position: 'fixed',
     overflowY: 'auto',
-    backgroundColor: 'rgb(0, 0, 0, 0.9)',
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
     zIndex: 4,
-    transition: 'opacity 1s ease-in-out'
+    transition: 'opacity 10s ease-in-out'
   },
   container: {
     display: 'table',
@@ -32,3 +32,8 @@ export const styles = StyleSheet.create({
     padding: '1rem'
   }
 });
+// export const stylesPlayer = (props) => StyleSheet.create({
+//   player: {
+//     [props.style]: COLORS[`player${props.index+1}`],
+//   },
+// });
