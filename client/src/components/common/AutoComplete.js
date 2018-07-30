@@ -121,15 +121,15 @@ class AutoComplete extends Component {
 	}
 
 	resultDiv() {
-		const{ limit, keys: { name, id } } = this.props;
+		const{ limit, keys: { name } } = this.props;
 
 		const renderItems = () => {
 			return (
 				this.state.results.slice(0, limit?limit:this.state.results.length).map((item, index) => {
 					return (
 						<li
-							key={index}
-							className={css(styles.suggestion, this.state.selected === index ? styles.suggestionSelected :null)} key={item[id]}
+							key={`item_${index}`}
+							className={css(styles.suggestion, this.state.selected === index ? styles.suggestionSelected :null)}
 						>
 							<div onClick={() => this.onSelect(item)}>
 								{this.setBold(item[name])}

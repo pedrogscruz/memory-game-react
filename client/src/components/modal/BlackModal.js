@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { css } from 'aphrodite/no-important';
 import { styles } from './BlackModalStyles';
 
-import { AwesomeButton } from 'react-awesome-button';
 import PropTypes from 'prop-types';
 
 const propTypes = {
@@ -16,7 +15,7 @@ const defaultProps = {
 	show: false
 };
 
-class BlackModal extends React.Component {
+class BlackModal extends Component {
   constructor (props) {
     super(props);
     this.state = {

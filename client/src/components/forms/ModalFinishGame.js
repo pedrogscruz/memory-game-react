@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { css } from 'aphrodite/no-important';
 import { styles, stylesPlayer } from './ModalFinishGameStyles';
 
-import { AwesomeButton } from 'react-awesome-button';
 import PropTypes from 'prop-types';
 
 import DashedList from '../lists/DashedList';
@@ -21,7 +20,7 @@ const defaultProps = {
   moves: []
 };
 
-class ModalFinishGame extends React.Component {
+class ModalFinishGame extends Component {
   constructor (props) {
     super(props);
     this.state = {
@@ -84,7 +83,6 @@ class ModalFinishGame extends React.Component {
   }
   renderFinalResult() {
     var matrix = [];
-    console.log(this.state.matrix);
     for (var i=0; i<this.state.matrix.y; i++) {
       var line = [];
       for (var k=0; k<this.state.matrix.x; k++) {
@@ -97,7 +95,7 @@ class ModalFinishGame extends React.Component {
           </span>
         );
       }
-      matrix.push(<div className={css(styles.line)}>{line}</div>);
+      matrix.push(<div key={`line_${i}`} className={css(styles.line)}>{line}</div>);
     }
     return matrix;
   }
@@ -125,7 +123,7 @@ class ModalFinishGame extends React.Component {
           <div className={css(stylesPlayer({index: plyrIndex, style: 'color'}).player)}>
             <div>{move.player.nickname}</div>
             <div>{move.message}</div>
-            <div>{move.time}</div>
+            <div>{move.time.toFixed(1)}</div>
           </div>
         </div>
         <div>

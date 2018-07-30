@@ -62,7 +62,7 @@ const defaultProps = {
 //   }
 // };
 
-class Game extends React.Component {
+class Game extends Component {
   constructor (props) {
     super(props);
     this.state = {
@@ -128,7 +128,7 @@ class Game extends React.Component {
         this.state.moves.push({
           player: {id, nickname},
           firstMove: this.state.firstMove.index,
-          time: parseFloat((10 - parseFloat(this.refs.time.innerHTML)).toFixed(2)),
+          time: 10.0,
           message
         });
         this.refs.time.innerHTML = '0.0';
@@ -159,9 +159,9 @@ class Game extends React.Component {
   }
   verifyHit (index) {
     if (this.state.firstMove) {
-      var after = () => {}, firstIndex = -1;
+      var firstIndex = -1, message;
       if (this.state.firstMove.src === this.state.details[index].src) {
-        var message = 'Hit!';
+        message = 'Hit!';
         this.state.details[index].status = 'hit';
         this.state.details[this.state.firstMove.index].status = 'hit';
         this.state.players[this.state.turn].points++;
@@ -173,7 +173,7 @@ class Game extends React.Component {
           player: {id, nickname},
           firstMove: this.state.firstMove.index,
           secondMove: index,
-          time: parseFloat((10 - parseFloat(this.refs.time.innerHTML)).toFixed(2)),
+          time: parseFloat((10 - parseFloat(this.refs.time.innerHTML)).toFixed(1)),
           message
         });
         this.setState({firstMove: false, removeEvents: true}, () => {
@@ -198,7 +198,7 @@ class Game extends React.Component {
         });
       }
       else {
-        var message = 'Missed';
+        message = 'Missed';
         this.state.details[index].status = 'open';
         firstIndex = this.state.firstMove.index;
         this.refs.message.innerHTML = message;
@@ -207,7 +207,7 @@ class Game extends React.Component {
           player: {id, nickname},
           firstMove: this.state.firstMove.index,
           secondMove: index,
-          time: parseFloat((10 - parseFloat(this.refs.time.innerHTML)).toFixed(2)),
+          time: parseFloat((10 - parseFloat(this.refs.time.innerHTML)).toFixed(1)),
           message
         });
         this.setState({firstMove: false, removeEvents: true}, () => {

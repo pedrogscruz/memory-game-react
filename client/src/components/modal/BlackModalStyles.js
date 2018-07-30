@@ -1,7 +1,5 @@
 import { StyleSheet } from 'aphrodite/no-important';
 
-import { COLORS } from '../_constants/colors';
-
 export const styles = StyleSheet.create({
   behind: {
     top: 0,

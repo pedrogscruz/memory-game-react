@@ -17,12 +17,9 @@ const defaultProps = {
   options: []
 };
 
-class SelectBox extends React.Component {
-  constructor (props) {
-    super(props);
-  }
+class SelectBox extends Component {
   renderOptions(optn, index) {
-    return <option key={JSON.stringify(optn)+index} className={css(index%2==0?styles.optionDark1:styles.optionDark2)} value={optn.value}>{optn.label}</option>;
+    return <option key={JSON.stringify(optn)+index} className={css(index%2===0?styles.optionDark1:styles.optionDark2)} value={optn.value}>{optn.label}</option>;
   }
   render () {
     const { props } = this;

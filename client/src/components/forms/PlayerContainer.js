@@ -21,7 +21,7 @@ const defaultProps = {
   changePlayers: (players) => {}
 };
 
-class PlayerContainer extends React.Component {
+class PlayerContainer extends Component {
   constructor (props) {
     super(props);
     this.playerSelectNickname = this.playerSelectNickname.bind(this);
@@ -54,7 +54,7 @@ class PlayerContainer extends React.Component {
           exists: null
         });
     }
-    else if (nextProps.qtd != 0)
+    else if (nextProps.qtd !== 0)
       players = players.slice(0, nextProps.qtd)
     this.setState({ players });
   }
@@ -174,7 +174,6 @@ class PlayerContainer extends React.Component {
     );
   }
   render () {
-    const { list, qtd } = this.props;
     return (
       <DashedList items={this.state.players.map((plyr, index) => this.renderPlayer(plyr, index))} />
     );

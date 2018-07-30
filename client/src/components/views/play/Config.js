@@ -12,7 +12,7 @@ import { AwesomeButton } from 'react-awesome-button';
 import SelectBox from '../../common/SelectBox';
 import PlayerContainer from '../../forms/PlayerContainer';
 
-class Config extends React.Component {
+class Config extends Component {
 	constructor (props) {
     super(props);
     this.action = this.action.bind(this);

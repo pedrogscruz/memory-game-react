@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 
 import { css } from 'aphrodite/no-important';
@@ -7,10 +6,7 @@ import { styles } from './MenuStyles';
 
 import { AwesomeButton } from 'react-awesome-button';
 
-class Menu extends React.Component {
-	constructor (props) {
-		super(props);
-	}
+class Menu extends Component {
 	// render the options of the menu
 	renderMenuOption (option) {
 		const { match } = this.props;

@@ -17,10 +17,7 @@ const defaultProps = {
   type: 'text'
 };
 
-class InputField extends React.Component {
-  constructor (props) {
-    super(props);
-  }
+class InputField extends Component {
   render () {
     const { props } = this;
     return (

@@ -13,10 +13,7 @@ const defaultProps = {
   items: []
 };
 
-class DashedList extends React.Component {
-  constructor (props) {
-    super(props);
-  }
+class DashedList extends Component {
   render () {
     const {items} = this.props;
     return (
