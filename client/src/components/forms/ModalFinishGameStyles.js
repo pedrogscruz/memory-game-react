@@ -5,7 +5,7 @@ import { COLORS } from '../_constants/colors';
 export const styles = StyleSheet.create({
   gridMaster: {
     display: 'grid',
-    gridTemplateRows: '284px 1fr',
+    gridTemplateRows: 'auto 1fr',
     height: '90vh',
     gridRowGap: '1rem'
   },

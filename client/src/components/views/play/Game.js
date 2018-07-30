@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { css } from 'aphrodite/no-important';
 import { styles } from './GameStyles';
 
-// import { savePausedGame, saveFinishedGame } from '../../../actions/player'
+import { finishedMatch } from '../../../actions/match'
 import { fetchTheme } from '../../../actions/theme'
 
 import { AwesomeButton } from 'react-awesome-button';
@@ -29,7 +29,7 @@ const propTypes = {
 
 const defaultProps = {
   gameConfig: {
-  cardsQty: 16,
+    cardsQty: 16,
     players: [
       {id: "1", createdAt: "2018-07-25T03:50:34.125Z", nickname: "pedro", password: "nois", exists: true},
       {id: "2", createdAt: "2018-07-25T05:55:03.731Z", nickname: "emerson", password: "1234", exists: true},
@@ -165,8 +165,8 @@ class Game extends Component {
         this.state.details[index].status = 'hit';
         this.state.details[this.state.firstMove.index].status = 'hit';
         this.state.players[this.state.turn].points++;
-        this.state.details[index].hitter = {...this.state.players[this.state.turn]};
-        this.state.details[this.state.firstMove.index].hitter = {...this.state.players[this.state.turn]};
+        this.state.details[index].hitter = this.state.players[this.state.turn].id;
+        this.state.details[this.state.firstMove.index].hitter = this.state.players[this.state.turn].id;
         this.refs.message.innerHTML = message;
         const {id, nickname} = this.state.players[this.state.turn];
         this.state.moves.push({
@@ -183,10 +183,29 @@ class Game extends Component {
             // if (plyr.points > 0)
           });
           if (points == this.props.gameConfig.cardsQty/2) {
-            this.refs.message.innerHTML = 'Winner';
+            this.refs.message.innerHTML = 'End';
             clearInterval(this.state.interval);
             clearInterval(this.state.gameTime);
+            const { finishedMatch, gameConfig: {timePerMove, cardsQty, players} } = this.props;
+            const { details, moves } = this.state;
+            var time = this.refs.matchTime.innerHTML.split(':');
+            console.log(time);
+            time = parseInt(time[0])*3600 + parseInt(time[1])*60 + parseInt(time[2]);
+            console.log(time);
             this.setState({removeEvents: false, showFinalModal: true});
+            finishedMatch({
+              timePerMove,
+              cardsQty,
+              time,
+              details: details.map((dtls) => {
+                const {src, hitter} = dtls;
+                return {src, hitter}
+              }),
+              moves: moves.map((mv) => {
+                return {...mv, player: mv.player.id}
+              }),
+              players: players.map((item) => item.id)
+            })
           }
           else {
             clearInterval(this.state.interval);
@@ -254,7 +273,7 @@ class Game extends Component {
           </span>
         );
       }
-      matrix.push(<div key={`line_${matrix.length}`} className={css(styles.card)}>{line}</div>);
+      matrix.push(<div key={`line_${matrix.length}`} className={css(styles.line)}>{line}</div>);
     }
     return matrix;
   }
@@ -359,4 +378,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, {fetchTheme})(Game);
+export default connect(mapStateToProps, { finishedMatch, fetchTheme })(Game);

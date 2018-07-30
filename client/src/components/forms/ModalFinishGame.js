@@ -87,7 +87,7 @@ class ModalFinishGame extends Component {
       var line = [];
       for (var k=0; k<this.state.matrix.x; k++) {
         const index = (this.state.matrix.x*i)+k,
-        plyrIndex = this.props.players.findIndex((plyr) => plyr.id === this.props.details[index].hitter.id);
+        plyrIndex = this.props.players.findIndex((plyr) => plyr.id === this.props.details[index].hitter);
         line.push(
           <span className={css(styles.card)} key={`card_${index}`}>
             <span className={css(styles.layer, stylesPlayer({index: plyrIndex, style: 'backgroundColor'}).player)}></span>

@@ -33,7 +33,11 @@ export const styles = StyleSheet.create({
   },
   card: {
     padding: '.25rem'
-  },
+	},
+	line: {
+		width: 'max-content',
+    padding: '.25rem'
+	},
   image: {
     maxHeight: "100px",
     maxWidth: "100px"
