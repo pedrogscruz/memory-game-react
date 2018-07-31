@@ -1,4 +1,4 @@
-# DentalQI
+# Memory Game
 
 # Things needed before preparing the environment:
 - Node and NPM up to date
@@ -15,9 +15,3 @@
 # How to run the project in your development environment
 
 Run `npm run dev`
-
-<!-- # How to use the Styleguide -->
-
-<!-- After you installed everything get to the client folder and run `npm run styleguide` or `yarn run styleguide` -->
-
-<!-- Then you can access the styleguide of the project in http://localhost:6060/ -->

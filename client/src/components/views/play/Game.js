@@ -189,9 +189,7 @@ class Game extends Component {
             const { finishedMatch, gameConfig: {timePerMove, cardsQty, players} } = this.props;
             const { details, moves } = this.state;
             var time = this.refs.matchTime.innerHTML.split(':');
-            console.log(time);
             time = parseInt(time[0])*3600 + parseInt(time[1])*60 + parseInt(time[2]);
-            console.log(time);
             this.setState({removeEvents: false, showFinalModal: true});
             finishedMatch({
               timePerMove,

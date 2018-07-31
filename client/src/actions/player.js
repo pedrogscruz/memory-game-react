@@ -8,7 +8,7 @@ export const FETCH_PLAYERS = 'FETCH_PLAYERS';
 export function createPlayer(nickname, password, callback) {
 	return async dispatch => {
 		try {
-			const res = await axios.post('http://5b55d99f503d920014688807.mockapi.io/send4/memoryGame/player', {nickname, password, createdAt: new Date()});
+			const res = await axios.post('http://5b55d99f503d920014688807.mockapi.io/memoryGame/player', {nickname, password, createdAt: new Date()});
       dispatch({ type: CREATE_PLAYER, payload: res.data });
       if (callback)
   			callback(res.data);
@@ -21,7 +21,7 @@ export function createPlayer(nickname, password, callback) {
 export function verifyPassword(id, password, callback) {
 	return async dispatch => {
 		try {
-			const res = await axios.get(`http://5b55d99f503d920014688807.mockapi.io/send4/memoryGame/player/${id}`);
+			const res = await axios.get(`http://5b55d99f503d920014688807.mockapi.io/memoryGame/player/${id}`);
       dispatch({ type: VERIFY_PASSWORD, payload: res.data.password === password });
       if (callback)
   			callback(res.data.password === password);
@@ -34,7 +34,7 @@ export function verifyPassword(id, password, callback) {
 export function fetchPlayers(callback) {
 	return async dispatch => {
 		try {
-			const res = await axios.get(`http://5b55d99f503d920014688807.mockapi.io/send4/memoryGame/player`);
+			const res = await axios.get(`http://5b55d99f503d920014688807.mockapi.io/memoryGame/player`);
       dispatch({ type: FETCH_PLAYERS, payload: res.data});
       if (callback)
   			callback(res.data);
